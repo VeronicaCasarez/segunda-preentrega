@@ -1,24 +1,79 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 
-import Products from "../dao/mongoManagers/productManager.js";
+import Products from "../dao/dbManagers/productManager.js";
+import ProductModel from "../dao/models/product.js"; 
+import productsModel from "../dao/models/product.js";
+//import Products from "../dao/models/product.js";
+
 
 const router=Router();
 
 const products=new Products();
 
 
-// Obtener todos los productos
 router.get('/', async (req, res) => {
-  try {
-    const allProducts = await products.getAll();
-    res.json({message: "Todos los productos",data:allProducts});
-  } catch (error) {
-    res.status(500).json({
-        message:"Error al buscar los productos",
-        error:error
-    });
-  }
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const sort = req.query.sort === 'desc' ? -1 : 1;
+        const query = req.query.query || '';
+
+        const filter = {};
+        if (query) {
+            filter.$or = [
+                { category: { $regex: query, $options: 'i' } },
+                { availability: { $regex: query, $options: 'i' } },
+            ];
+        }
+
+        const totalProducts = await ProductModel.countDocuments(filter);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const skip = (page - 1) * limit;
+
+        const allProducts = await productsModel.find(filter)
+            .sort({ price: sort })
+            .skip(skip)
+            .limit(limit);
+
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+
+        const result = {
+            status: 'success',
+            payload: allProducts,
+            totalPages,
+            prevPage: hasPrevPage ? page - 1 : null,
+            nextPage: hasNextPage ? page + 1 : null,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink: hasPrevPage ? `/products?page=${page - 1}` : null,
+            nextLink: hasNextPage ? `/products?page=${page + 1}` : null,
+        };
+
+        res.render('product', result); 
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Error al buscar los productos',
+            error: error.message,
+        });
+    }
 });
+// Obtener todos los productos
+// router.get('/', async (req, res) => {
+//   try {
+//     const allProducts = await products.getAll();
+//     res.json({message: "Todos los productos",data:allProducts});
+//   } catch (error) {
+//     res.status(500).json({
+//         message:"Error al buscar los productos",
+//         error:error
+//     });
+//   }
+// });
 
   
   // Obtener un producto por ID

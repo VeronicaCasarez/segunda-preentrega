@@ -1,0 +1,30 @@
+
+  <h1>Product List</h1>
+  
+  <form id="filter-form">
+    <label for="query">Search: </label>
+    <input type="text" id="query" name="query">
+    <button type="submit">Search</button>
+  </form>
+  
+  <ul id="product-list">
+    {{#each products}}
+      <li>
+        <h2>{{name}}</h2>
+        <p>Category: {{category}}</p>
+        <p>Availability: {{availability}}</p>
+        <p>Price: {{price}}</p>
+      </li>
+    {{/each}}
+  </ul>
+  
+  <div id="pagination">
+    {{#if hasNextPage}}
+      <a href="{{nextLink}}">Next Page</a>
+    {{/if}}
+    {{#if hasPrevPage}}
+      <a href="{{prevLink}}">Previous Page</a>
+    {{/if}}
+  </div>
+  
+
