@@ -4,7 +4,7 @@ import handlebars from "express-handlebars";
 import { __dirname } from "./utils.js";
 import * as dotenv from "dotenv";
 
-//import cartRouter from './routes/cart.router.js';
+import cartRouter from './routes/cart.router.js';
 import productRouter from './routes/product.router.js';
 
 
@@ -48,6 +48,7 @@ app.use(express.json());
 // Configurar las rutas
 //app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
+app.use( '/api/carts', cartRouter)
 
 
 // Ruta de inicio

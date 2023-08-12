@@ -65,7 +65,7 @@ const products=new Products();
 //     }
 // });
 // Obtener todos los productos
-router.get('/', async (req, res) => {
+router.get('/all', async (req, res) => {
   try {
     const allProducts = await products.getAll();
     res.render('product',{products:allProducts});
@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
 
 // Obtener los productos con limite
 router.get("/", async (req, res) => {
-  const limit  = req.query;
+  const {limit}  = req.query;
   
   try {
     const response = await products.getAll();
@@ -93,6 +93,8 @@ router.get("/", async (req, res) => {
     res.render({ message: "Error al obtener los productos", data: err });
   }
 });
+
+
   // Obtener un producto por ID
   router.get('/:productId', async (req, res) => {
     const { productId } = req.params;
