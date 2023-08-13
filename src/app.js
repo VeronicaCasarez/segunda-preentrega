@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import handlebars from "express-handlebars";
+import handlebars, { engine } from "express-handlebars";
 import { __dirname } from "./utils.js";
 import * as dotenv from "dotenv";
 
@@ -17,10 +17,16 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 //Configuracion para handlebars
-app.engine("handlebars", handlebars.engine());
+app.engine('handlebars', engine({
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  }
+}));
+
 app.set("view engine", "handlebars");
-//app.set("views", "./src/views");
 app.set("views", __dirname + "/views");
+
 
 app.use(express.static("public"));
 

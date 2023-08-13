@@ -14,7 +14,7 @@ const productsManager = new Product();
 router.get('/', async (req, res) => {
   try {
     const showCart = await cartsManager.getAll();
-    res.json({message: "Este es el carrito",data:showCart});
+    res.render('cart',{carts:showCart});
   } catch (error) {
     res.status(500).json({
         message:"Error al mostrar el carrito",
@@ -23,6 +23,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+
+// Mostrar un carrito por su ID
+router.get('/:cartId', async (req, res) => {
+  const { cartId } = req.params;
+  
+  try {
+    const cartData = await cartsManager.getById(cartId);
+
+    if (!cartData) {
+      res.status(404).json({ error: "Carrito no encontrado" });
+      return;
+    }
+
+    res.render('cart', { carts: [cartData] }); // Renderiza la vista 'cart' con el carrito encontrado
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al obtener el carrito",
+      error: error,
+    });
+  }
+});
+  
+  
     
   // Crear un nuevo carrito
   router.post('/', async (req, res) => {
@@ -42,6 +66,7 @@ router.get('/', async (req, res) => {
   
   router.post("/:cid/product/:pid", async (req, res) => {
     try {
+      
       const cartId = req.params.cid;
       const productId = req.params.pid;
   
@@ -53,30 +78,26 @@ router.get('/', async (req, res) => {
       }
   
       const existingProductIndex = cartData.products.findIndex(product => 
-        product.productId.toString() == productId);
-
+        product.productId.toString() === productId);
+    
       if (existingProductIndex !== -1) {
         // Si el producto ya existe en el carrito, aumenta la cantidad
         cartData.products[existingProductIndex].quantity += 1;
-        await cartsManager.update(cartId, cartData); // Actualiza el carrito con la nueva cantidad
-        res.json({
-          message: "Cantidad del producto aumentada en el carrito",
-          data: cartData,
-        });
+        await cartsManager.update(cartId, cartData); 
+
       } else {
-        const productToAdd = await productsManager.getById(productId);
-        if (productToAdd) {
-          // Si el producto no existe en el carrito, agrégalo con cantidad 1
-          cartData.products.push({ productId, quantity: 1 });
-          await cartsManager.update(cartId, cartData); // Actualiza el carrito con el nuevo producto
-          res.json({
-            message: "Producto agregado al carrito correctamente",
-            data: cartData,
-          });
-        } else {
-          res.status(404).json({ error: "Producto no encontrado" });
-        }
+        // Si el producto no existe en el carrito, agrégalo con cantidad 1
+        cartData.products.push({ productId, quantity: 1 });
       }
+        
+      // Actualiza el carrito con la nueva información
+      const productData = await productsManager.getById(productId);
+      await cartsManager.update(cartId, productData);
+         
+      res.json({
+        message: "Producto agregado al carrito correctamente",
+        data: cartData,
+      });
     } catch (error) {
       res.status(500).json({
         message: "Error al agregar el producto al carrito",
@@ -84,6 +105,7 @@ router.get('/', async (req, res) => {
       });
     }
   });
+  
   
 //agregar un producto al carrito
 // router.post("/:cid/product/:pid", async (req, res) => {

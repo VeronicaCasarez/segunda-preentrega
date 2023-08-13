@@ -9,6 +9,10 @@ export default class Products {
     return await productsModel.findById(id);
   }
 
+  async getByCategory(filter) {
+    console.log(filter)
+    return await productsModel.find({category:filter});
+  }
   async save(data) {
     const newProduct = await productsModel.create(data);
     return newProduct;

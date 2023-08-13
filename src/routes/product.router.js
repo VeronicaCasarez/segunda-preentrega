@@ -13,57 +13,6 @@ const router=Router();
 
 const products=new Products();
 
-
-// router.get('/', async (req, res) => {
-//     try {
-//         const limit = parseInt(req.query.limit) || 10;
-//         const page = parseInt(req.query.page) || 1;
-//         const sort = req.query.sort === 'desc' ? -1 : 1;
-//         const query = req.query.query || '';
-
-//         const filter = {};
-//         if (query) {
-//             filter.$or = [
-//                 { category: { $regex: query, $options: 'i' } },
-//                 { availability: { $regex: query, $options: 'i' } },
-//             ];
-//         }
-
-//         const totalProducts = await ProductModel.countDocuments(filter);
-//         const totalPages = Math.ceil(totalProducts / limit);
-
-//         const skip = (page - 1) * limit;
-
-//         const allProducts = await productsModel.find(filter)
-//             .sort({ price: sort })
-//             .skip(skip)
-//             .limit(limit);
-
-//         const hasNextPage = page < totalPages;
-//         const hasPrevPage = page > 1;
-
-//         const result = {
-//             status: 'success',
-//             payload: allProducts,
-//             totalPages,
-//             prevPage: hasPrevPage ? page - 1 : null,
-//             nextPage: hasNextPage ? page + 1 : null,
-//             page,
-//             hasPrevPage,
-//             hasNextPage,
-//             prevLink: hasPrevPage ? `/products?page=${page - 1}` : null,
-//             nextLink: hasNextPage ? `/products?page=${page + 1}` : null,
-//         };
-
-//         res.render('product', result); 
-//     } catch (error) {
-//         res.status(500).json({
-//             status: 'error',
-//             message: 'Error al buscar los productos',
-//             error: error.message,
-//         });
-//     }
-// });
 // Obtener todos los productos
 router.get('/all', async (req, res) => {
   try {
@@ -77,22 +26,50 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// Obtener los productos con limite
+//NUEVO METODO GET
 router.get("/", async (req, res) => {
-  const {limit}  = req.query;
+  const { limit, page, filter } = req.query;
+  const defaultLimit = 10;
+  const defaultPage = 1;
   
   try {
-    const response = await products.getAll();
-    if (limit) {
-      let tempArray = response.slice(0, limit);
-      res.render('product', { products: tempArray });
-    } else {
-      res.render('product', { products: response });
+    let response = await products.getAll();
+
+    if (filter) {
+       response = products.getByCategory( filter);
+       console.log(response)
+      //res.render('product', { products: response });
+      
     }
+    
+    const startIndex = (page ? +page - 1 : defaultPage - 1) * (limit ? +limit : defaultLimit);
+    const endIndex = startIndex + (limit ? +limit : defaultLimit);
+    const paginatedResponse = response.slice(startIndex, endIndex);
+
+    res.render('product', { products: paginatedResponse });
   } catch (err) {
-    res.render({ message: "Error al obtener los productos", data: err });
+    res.render('error', { message: "Error al obtener los productos", data: err });
   }
 });
+
+
+
+// Obtener los productos con limite--funciona
+// router.get("/", async (req, res) => {
+//   const {limit}  = req.query;
+  
+//   try {
+//     const response = await products.getAll();
+//     if (limit) {
+//       let tempArray = response.slice(0, limit);
+//       res.render('product', { products: tempArray });
+//     } else {
+//       res.render('product', { products: response });
+//     }
+//   } catch (err) {
+//     res.render({ message: "Error al obtener los productos", data: err });
+//   }
+// });
 
 
   // Obtener un producto por ID
