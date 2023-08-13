@@ -11,8 +11,15 @@ export default class Products {
 
   async getByCategory(filter) {
     console.log(filter)
-    return await productsModel.find({category:filter});
+    //RESOLVER QUE FILTRE POR CATEGORIA
+    const productInCategory = await productsModel.aggregate([
+      { $match: { category: filter } },
+      { $group: { _id: "$name", products: { $push: "$ROOT" } } }
+    ]);
+    console.log(productInCategory);
+    return productInCategory;
   }
+
   async save(data) {
     const newProduct = await productsModel.create(data);
     return newProduct;

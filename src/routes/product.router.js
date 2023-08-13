@@ -28,30 +28,38 @@ router.get('/all', async (req, res) => {
 
 //NUEVO METODO GET
 router.get("/", async (req, res) => {
-  const { limit, page, filter } = req.query;
+  const { limit, page, filter, sort } = req.query;
   const defaultLimit = 10;
   const defaultPage = 1;
   
   try {
     let response = await products.getAll();
-
+    
+    //RESOLVER LOS FILTROS POR CATEGORY
     if (filter) {
-       response = products.getByCategory( filter);
-       console.log(response)
-      //res.render('product', { products: response });
-      
+       const productByCategory = await products.getByCategory(filter);
+       return res.json({ message: "Listado de productos filtrados", data: productByCategory });
     }
     
+    if (sort === 'asc' || sort === 'desc') {
+      response.sort((a, b) => {
+        return sort === 'asc' ? a.price - b.price : b.price - a.price;
+      });
+    }
+
     const startIndex = (page ? +page - 1 : defaultPage - 1) * (limit ? +limit : defaultLimit);
     const endIndex = startIndex + (limit ? +limit : defaultLimit);
     const paginatedResponse = response.slice(startIndex, endIndex);
 
     res.render('product', { products: paginatedResponse });
+
   } catch (err) {
-    res.render('error', { message: "Error al obtener los productos", data: err });
+    res.status(500).json({
+      message: "Error al obtener los productos",
+      error: err
+    });
   }
 });
-
 
 
 // Obtener los productos con limite--funciona
