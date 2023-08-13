@@ -35,10 +35,22 @@ router.get("/", async (req, res) => {
   try {
     let response = await products.getAll();
     
-    //RESOLVER LOS FILTROS POR CATEGORY
+    // Resolución de los filtros por categoría
     if (filter) {
-       const productByCategory = await products.getByCategory(filter);
-       return res.json({ message: "Listado de productos filtrados", data: productByCategory });
+      const productByCategory = await products.getByCategory(filter);
+      return res.render('product', {
+        products: productByCategory,
+        pagination: {
+          totalPages: 1,  // Debes calcular esto en base a la cantidad total de productos y el límite por página
+          prevPage: null,
+          nextPage: null,
+          page: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+          prevLink: null,
+          nextLink: null
+        }
+      });
     }
     
     if (sort === 'asc' || sort === 'desc') {
@@ -51,7 +63,21 @@ router.get("/", async (req, res) => {
     const endIndex = startIndex + (limit ? +limit : defaultLimit);
     const paginatedResponse = response.slice(startIndex, endIndex);
 
-    res.render('product', { products: paginatedResponse });
+    const totalPages = Math.ceil(response.length / (limit ? +limit : defaultLimit));
+
+    res.render('product', {
+      products: paginatedResponse,
+      pagination: {
+        totalPages: totalPages,
+        prevPage: null,  // Actualiza con el valor correcto
+        nextPage: null,  // Actualiza con el valor correcto
+        page: page ? +page : defaultPage,
+        hasPrevPage: page > 1,
+        hasNextPage: endIndex < response.length,
+        prevLink: null,  // Actualiza con el valor correcto
+        nextLink: null   // Actualiza con el valor correcto
+      }
+    });
 
   } catch (err) {
     res.status(500).json({
@@ -60,6 +86,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 
 
 // Obtener los productos con limite--funciona
