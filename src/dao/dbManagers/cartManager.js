@@ -1,19 +1,22 @@
 import cartModel from "../models/cart.js";
 
 export default class Carts {
+  //obtener todos los carritos
   async getAll() {
     return await cartModel.find({}).lean();
   }
-
-  getOne = async (id) => {
+ //obtener un carrito
+  async getOne (id)  {
     let result = await cartModel.findById(id).lean();
     return result;
   };
   
+  //obtener carrito por id
   async getById(id) {
     return await cartModel.findById(id);
   }
 
+  //crear carrito
   async save(data) {
     const newCart = await cartModel.create(data);
     return newCart;
