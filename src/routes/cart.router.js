@@ -64,6 +64,7 @@ router.get('/:cartId', async (req, res) => {
     }
   });
   
+  //Agregar un producto al carrito SOLO AGREGA UNO
   router.post("/:cid/product/:pid", async (req, res) => {
     try {
       
@@ -106,7 +107,27 @@ router.get('/:cartId', async (req, res) => {
     }
   });
   
+  //eliminar un producto del carrito
+ router.delete('/:cartId/:productId', (req, res) => {
+    const cartId = req.params.cartId;
+    const productId = req.params.productId;
   
+    try {
+      // Llama al método del cartManager para eliminar el producto del carrito
+      const success = cartsManager.removeFromCart(cartId, productId);
+  
+      if (success) {
+        res.status(200).json({ message: 'Product removed from cart successfully' });
+      } else {
+        res.status(404).json({ message: 'Product not found in cart' });
+      }
+    } catch (err) {
+      res.status(500).json({ message: 'Error removing product from cart', error: err });
+    }
+  });
+  
+
+
 //agregar un producto al carrito
 // router.post("/:cid/product/:pid", async (req, res) => {
 //   try {

@@ -19,15 +19,25 @@ export default class Carts {
     return newCart;
     
  }
-
+ //actualizar carrito
   async update(id, data) {
-    
     const updatedCart = await  cartModel.findByIdAndUpdate(id, {products:data});
     return updatedCart;
   }
 
+//eliminar carrito
   async delete(id) {
     const deletedCart = await cartModel.findByIdAndDelete(id);
     return deletedCart;
+  }
+
+ //Eliminar del carrito el producto seleccionado
+  async removeFromCart(cid, pid) {
+      let cart = await cartModel.findOne({_id: cid})
+      const result = await cartModel.updateOne(
+    { _id: cid },
+    { $pull: { products: {_id : pid } } }
+  );
+    return result
   }
 }

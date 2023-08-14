@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { __dirname } from "../utils.js";
 import * as dotenv from "dotenv";
+import { paginate } from "mongoose-paginate-v2";
 
 import Products from "../dao/dbManagers/productManager.js";
 import ProductModel from "../dao/models/product.js"; 
