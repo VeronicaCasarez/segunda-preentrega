@@ -43,4 +43,22 @@ export default class Carts {
   );
     return result
   }
+
+  //encontrar un producto en el carrito por id
+  async findProductInCartById(cid, pid, newQuantity) {
+    console.log(cid)
+    console.log(pid)
+    console.log(newQuantity)
+    const updatedCart = await cartModel.findOneAndUpdate(
+      { _id: cid, 'products._id': pid }, // Encuentra el carrito y el producto específico dentro de él
+      { $set: { 'products.$.quantity': newQuantity } }, // Actualiza la cantidad del producto específico
+      { new: true }
+    );
+    
+   console.log(updatedCart)
+     
+    return updatedCart;
+  }
+  
+
 }

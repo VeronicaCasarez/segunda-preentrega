@@ -115,12 +115,12 @@ router.get('/:cartId', async (req, res) => {
        const success = cartsManager.removeFromCart(cartId, productId);
   
       if (success) {
-        res.status(200).json({ message: 'Product removed from cart successfully' });
+        res.status(200).json({ message: 'Producto eliminado del carrito' });
       } else {
-        res.status(404).json({ message: 'Product not found in cart' });
+        res.status(404).json({ message: 'Producto no encontrado' });
       }
     } catch (err) {
-      res.status(500).json({ message: 'Error removing product from cart', error: err });
+      res.status(500).json({ message: 'Error al eliminar un producto del carrito', error: err });
     }
   });
   
@@ -146,53 +146,69 @@ router.put('/:cid/', async (req, res) => {
   }
 });
 
-//agregar un producto al carrito
-// router.post("/:cid/product/:pid", async (req, res) => {
-//   try {
-//     const cartId = req.params.cid;
-//     const productId = req.params.pid;
-         
-//     const cartData = await cartsManager.getById(cartId);
 
-//     if (!cartData) {
-//       res.status(404).json({ error: "Carrito no encontrado" });
-//       return;
-//     }
+//eliminar todos los productos del carrito
+router.delete('/:cid/', async (req, res) => {
+  const cartId = req.params.cid;
 
-//     const existingProduct = await productsManager.getById(productId);
-   
-//     if (existingProduct) {
-      
-//       const cartUpdated = await cartsManager.update(cartId, existingProduct);
-      
-//       res.json({
-//         message: "Producto agregado al carrito correctamente",
-//         data: cartUpdated,
-//       });
-//     } else {
-//       res.status(404).json({ error: "Producto no encontrado" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({
-//       message: "Error al agregar el producto al carrito",
-//       error: error,
-//     });
-//   }
-// });
-  
+  try {
+    const cart = await cartsManager.getById(cartId);
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Carrito no encontrado' });
+
+    }
+    cart.products = [];
+    await cart.save();
+
+    res.status(200).json({ message: 'Todos los productos del carrito fueron eliminados', cart: cart });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar todos los productos del carrito', error: error });
+  }
+});
+
+ //actualizar solo la cantidad de un producto en el carrito
+ router.put('/:cid/updatequantity/:productId', async (req, res) => {
+  const cartId = req.params.cid;
+  const productId = req.params.productId;
+  const newQuantity = req.body.quantity; // Nueva cantidad de ejemplares
+  console.log(newQuantity)
+  try {
+    const cart = await cartsManager.getById(cartId);
+    console.log(cart)
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+    // Buscar el producto en el carrito por su ID y lo actualiza
+   // Buscar el producto en el carrito por su ID y lo actualiza con la nueva cantidad
+   const productToUpdate = await cartsManager.findProductInCartById(cartId, productId, newQuantity);
+    console.log(productToUpdate)
+    
+    // Actualizar la cantidad de ejemplares
+    //cart.products(productToUpdate).quantity = newQuantity;
+
+    // Guardar los cambios en la base de datos
+    await cart.save();
+
+    res.status(200).json({ message: 'Product quantity updated successfully', cart: cart });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating product quantity', error: error });
+  }
+});
+
   
   // Eliminar el carrito
-  router.delete('/:cartId', async (req, res) => {
-    const { cartId } = req.params;
-    try {
-      const cartDeleted= await cartsManager.delete(cartId);
-      res.json({message:"Carrito eliminado",data:cartDeleted});
-    } catch (error) {
-        res.status(500).json({
-            message:"Error al eliminar el carrito",
-            error:error
-        });
-    }
-  });
+  // router.delete('/removecart/:cartId', async (req, res) => {
+  //   const { cartId } = req.params;
+  //   try {
+  //     const cartDeleted= await cartsManager.delete(cartId);
+  //     res.json({message:"Carrito eliminado",data:cartDeleted});
+  //   } catch (error) {
+  //       res.status(500).json({
+  //           message:"Error al eliminar el carrito",
+  //           error:error
+  //       });
+  //   }
+  // });
   
   export default router;
