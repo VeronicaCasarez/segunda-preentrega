@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
       return res.render('product', {
         products: productByCategory,
         pagination: {
-          totalPages: 1,  // Debes calcular esto en base a la cantidad total de productos y el límite por página
+          totalPages: 1,  
           prevPage: null,
           nextPage: null,
           page: 1,
@@ -61,22 +61,26 @@ router.get("/", async (req, res) => {
 
     const startIndex = (page ? +page - 1 : defaultPage - 1) * (limit ? +limit : defaultLimit);
     const endIndex = startIndex + (limit ? +limit : defaultLimit);
+  
     const paginatedResponse = response.slice(startIndex, endIndex);
 
     const totalPages = Math.ceil(response.length / (limit ? +limit : defaultLimit));
-
+   
     res.render('product', {
       products: paginatedResponse,
       pagination: {
+        status: 'success',
         totalPages: totalPages,
-        prevPage: null,  // Actualiza con el valor correcto
-        nextPage: null,  // Actualiza con el valor correcto
+        prevPage: page > 1 ? +page - 1 : null,
+        nextPage: endIndex < response.length ? +page + 1 : null,
         page: page ? +page : defaultPage,
         hasPrevPage: page > 1,
         hasNextPage: endIndex < response.length,
-        prevLink: null,  // Actualiza con el valor correcto
-        nextLink: null   // Actualiza con el valor correcto
+        prevLink: page > 1 ? `/api/products?page=${+page - 1}` : null,
+        nextLink: endIndex < response.length ? `/api/products?page=${+page + 1}` : null
       }
+   
+
     });
 
   } catch (err) {

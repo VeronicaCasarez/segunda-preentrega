@@ -12,16 +12,18 @@
       </li>
     {{/each}}
   </ul>
-  
- <div id="pagination">
-    {{#if hasNextPage}}
-      <a href="{{nextLink}}">Next Page</a>
-    {{/if}}
-    {{#if hasPrevPage}}
-      <a href="{{prevLink}}">Previous Page</a>
-    {{/if}}
-  </div>
-</div> 
 
+
+<div  id="paginated">
+  <p>Page {{ pagination.page }} of {{ pagination.totalPages }}</p>
+  {{#if hasPrevPage}}
+    <a href={{this.prevLink}}>Anterior</a>
+  {{/if}}
+  &nbsp;
+  {{this.page}}
+  {{#if hasNextPage}}
+    <a href={{this.nextLink}}>Siguiente</a>
+  {{/if}}
+</div>
   
 
