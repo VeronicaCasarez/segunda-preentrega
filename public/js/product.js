@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p>Category: ${product.category}</p>
         <p>Availability: ${product.availability}</p>
         <p>Price: ${product.price}</p>
+        <button class="add-to-cart-button" data-productid="${product._id}">Add to Cart</button>
+        <button class="view-details-button" data-productid="${product._id}">View Details</button>
       `;
       productList.appendChild(productItem);
     });
@@ -44,4 +46,35 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationDiv.appendChild(nextLink);
     }
   }
+
+  // Lógica para agregar el producto al carrito
+  document.querySelectorAll('.add-to-cart-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const productId = event.target.getAttribute('data-productid');
+
+      
+      const response = await fetch(`/:cid/product/:${productId}`, {
+           method: 'POST',
+    
+      });
+
+      // Maneja la respuesta de la API
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.message); // Muestra un mensaje al usuario
+      } else {
+        alert('Error al agregar el producto al carrito');
+      }
+    });
+  });
+
+  // Lógica para mostrar los detalles del producto
+  document.querySelectorAll('.view-details-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const productId = event.target.getAttribute('data-productid');
+
+      // Redirige a la ruta que mostrará los detalles del producto
+      window.location.href = `/detail/:${productId}`;
+    });
+  });
 });

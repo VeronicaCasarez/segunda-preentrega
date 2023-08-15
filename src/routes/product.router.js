@@ -39,6 +39,7 @@ router.get("/", async (req, res) => {
     // Resolución de los filtros por categoría
     if (filter) {
       const productByCategory = await products.getByCategory(filter);
+      console.log(JSON.stringify(productByCategory))
       return res.render('product', {
         products: productByCategory,
         pagination: {
@@ -91,25 +92,25 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
-
-
-// Obtener los productos con limite--funciona
-// router.get("/", async (req, res) => {
-//   const {limit}  = req.query;
+ 
+  //mostrar el detalle de un producto 
+  router.get('/detail/:productId', async (req, res) => {
+    const productId = req.params.productId;
   
-//   try {
-//     const response = await products.getAll();
-//     if (limit) {
-//       let tempArray = response.slice(0, limit);
-//       res.render('product', { products: tempArray });
-//     } else {
-//       res.render('product', { products: response });
-//     }
-//   } catch (err) {
-//     res.render({ message: "Error al obtener los productos", data: err });
-//   }
-// });
+    try {
+      // Realiza una consulta a la base de datos para obtener los detalles del producto por su ID
+      const product = await productsModel.findById(productId);
+  
+      if (!product) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+      }
+  
+      res.render('productdetail', { product });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener los detalles del producto' });
+    }
+  });
+  
 
 
   // Obtener un producto por ID
