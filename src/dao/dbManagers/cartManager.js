@@ -44,19 +44,61 @@ export default class Carts {
     return result
   }
 
-  //encontrar un producto en el carrito por id
-  async findProductInCartById(cid, pid, newQuantity) {
+
+  //encontrar un producto en el carrito por id 
+  async isProductInCart(cid, pid) {
     console.log(cid)
-    console.log(pid)
-    console.log(newQuantity)
+    let productInCart = await cartModel.findOne(
+      { _id: cid, 'products._id': pid });
+             console.log(productInCart)
+    return productInCart;
+
+   }
+
+  // incrementar la cantidad de un producto en el carrito**
+async incrementProductQuantity(cid, pid) {
     const updatedCart = await cartModel.findOneAndUpdate(
-      { _id: cid, 'products._id': pid }, // Encuentra el carrito y el producto específico dentro de él
-      { $set: { 'products.$.quantity': newQuantity } }, // Actualiza la cantidad del producto específico
+      { _id: cid, "products._id": pid },
+      { $inc: { "products.$.quantity": 1 } },
       { new: true }
     );
+
+    return updatedCart;
+ 
+}
+
+// agregar un producto al carrito con cantidad 1**
+async addProductToCart(cid, pid) {
+  try {
+    const updatedCart = await cartModel.findOneAndUpdate(
+      { _id: cid },
+      { $push: { products: { _id:pid, quantity: 1 } } },
+      { new: true }
+    );
+
+    if (!updatedCart) {
+      console.log("Carrito no encontrado");
+      return null;
+    }
+
+    console.log("carrito actualizado", updatedCart);
+    return updatedCart;
+  } catch (error) {
+    console.error("Error aal agregar prodcuto al carrito", error);
+    throw error;
+  }
+}
+
+   //encontrar un producto en el carrito por id y actualizar la cantidad 
+   //en varios
+  async findProductInCartAndUpdateQuantity(cid, pid, newQuantity) {
     
-   console.log(updatedCart)
-     
+    const updatedCart = await cartModel.findOneAndUpdate(
+      { _id: cid, 'products._id': pid }, 
+      { $set: { 'products.$.quantity': newQuantity } }, 
+      { new: true }
+    );
+         
     return updatedCart;
   }
   
