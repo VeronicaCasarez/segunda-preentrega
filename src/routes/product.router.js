@@ -33,46 +33,45 @@ router.get("/", async (req, res) => {
   const defaultLimit = 10;
   const defaultPage = 1;
   
+  // Parsea el valor de la página a un número entero
+  const currentPage = parseInt(page, 10) || defaultPage;
+  
   try {
     let response = await products.getAll();
     
-    let filteredResponse = response;
-    
+    // Resolución de los filtros por categoría
     if (filter) {
-      filteredResponse = await products.getByCategory(filter);
-      console.log(filteredResponse)
+      response = await products.getByCategory(filter);
     }
     
+    // Resolución de la ordenación
     if (sort === 'asc' || sort === 'desc') {
-      filteredResponse.sort((a, b) => {
+      response.sort((a, b) => {
         return sort === 'asc' ? a.price - b.price : b.price - a.price;
       });
     }
 
-    const startIndex = (page ? +page - 1 : defaultPage - 1) * (limit ? +limit : defaultLimit);
+    const startIndex = (currentPage - 1) * (limit ? +limit : defaultLimit);
     const endIndex = startIndex + (limit ? +limit : defaultLimit);
   
-    const paginatedResponse = filteredResponse.slice(startIndex, endIndex);
+    const paginatedResponse = response.slice(startIndex, endIndex);
 
-    const totalPages = Math.ceil(filteredResponse.length / (limit ? +limit : defaultLimit));
+    const totalPages = Math.ceil(response.length / (limit ? +limit : defaultLimit));
    
-    return res.render('product', {
+    res.render('product', {
       products: paginatedResponse,
       pagination: {
         status: 'success',
         totalPages: totalPages,
-        prevPage: page > 1 ? +page - 1 : null,
-        nextPage: endIndex < filteredResponse.length ? +page + 1 : null,
-        page: page ? +page : defaultPage,
-        hasPrevPage: page > 1,
-        hasNextPage: endIndex < filteredResponse.length,
-        prevLink: page > 1 ? `/api/products?page=${+page - 1}` : null,
-        nextLink: endIndex < filteredResponse.length ? `/api/products?page=${+page + 1}` : null,
-        currentPage: page ? +page : defaultPage, // Agrega esta línea
+        prevPage: currentPage > 1 ? currentPage - 1 : null,
+        nextPage: endIndex < response.length ? currentPage + 1 : null,
+        page: currentPage,
+        hasPrevPage: currentPage > 1,
+        hasNextPage: endIndex < response.length,
+        prevLink: currentPage > 1 ? `/api/products?page=${currentPage - 1}` : null,
+        nextLink: endIndex < response.length ? `/api/products?page=${currentPage + 1}` : null
       }
     });
-    
-    
 
   } catch (err) {
     res.status(500).json({
@@ -81,6 +80,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 
  
   //mostrar el detalle de un producto 
