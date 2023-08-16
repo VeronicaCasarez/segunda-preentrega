@@ -28,9 +28,9 @@ router.get('/', async (req, res) => {
 // Mostrar un carrito por su ID
 router.get('/:cartId', async (req, res) => {
   const { cartId } = req.params;
-  
   try {
-    const cartData = await cartsManager.getById(cartId);
+     const cartData = await cartsManager.getById(cartId);
+      console.log(cartData)
     if (!cartData) {
       res.status(404).json({ error: "Carrito no encontrado" });
       return;

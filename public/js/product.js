@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const productId = event.target.getAttribute('data-productid');
 
       
-      const response = await fetch(`/:cid/product/:${productId}`, {
+      const response = await fetch(`/:cid/product/${productId}`, {
            method: 'POST',
     
       });
@@ -67,14 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
+})
   // Lógica para mostrar los detalles del producto
   document.querySelectorAll('.view-details-button').forEach(button => {
-    button.addEventListener('click', async (event) => {
-      const productId = event.target.getAttribute('data-productid');
-
-      // Redirige a la ruta que mostrará los detalles del producto
-      window.location.href = `/detail/:${productId}`;
+    button.addEventListener('click', (event) => {
+      //const productId = toString(event.currentTarget.id);
+      const productId = toString(event.target.getAttribute('id'));
+     
+      console.log(productId);
+  
+      // redirigir a la ruta de detalles del producto usando el ID
+      window.location.href = `http://localhost:8080/api/products/detail/${productId}`;
     });
   });
-});
+

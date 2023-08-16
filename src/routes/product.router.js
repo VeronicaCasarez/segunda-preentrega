@@ -88,14 +88,14 @@ router.get("/", async (req, res) => {
     const productId = req.params.productId;
   
     try {
-      // Realiza una consulta a la base de datos para obtener los detalles del producto por su ID
-      const product = await productsModel.findById(productId);
+       // consulta a la base de datos para obtener los detalles del producto por su ID
+      const productDetails = await products.getById(productId);
   
-      if (!product) {
+      if (!productDetails) {
         return res.status(404).json({ error: 'Producto no encontrado' });
       }
   
-      res.render('productdetail', { product });
+      res.render('productdetail', { product: productDetails }); 
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener los detalles del producto' });
     }
@@ -107,8 +107,9 @@ router.get("/", async (req, res) => {
   router.get('/:productId', async (req, res) => {
     const { productId } = req.params;
     try {
-      const productById = await products.getById(productId);
+      const productById = await products.getById(productId)
       res.json({message:"Listado de productos",data:productById});
+      
     } catch (error) {
         res.status(500).json({
             message:"Error al buscar el producto por id",

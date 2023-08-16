@@ -4,13 +4,15 @@ const cartsCollection = 'Carts';
 
 const cartSchema = new mongoose.Schema({
   products: [{
-    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    _id: { type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Product', 
+      required: true },
     quantity: { type: Number, required: true, default: 1 }
   }]
 
   
 });
-// cartSchema.pre("find", function () {
+// cartSchema.pre("findById", function () {
 //   this.populate("products.product");
 // });
 

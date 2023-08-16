@@ -1,5 +1,6 @@
 import cartModel from "../models/cart.js";
 
+
 export default class Carts {
   //obtener todos los carritos
   async getAll() {
@@ -13,7 +14,8 @@ export default class Carts {
   
   //obtener carrito por id
   async getById(id) {
-    return await cartModel.findById(id);
+    return await cartModel.findById(id).populate('products');
+       
   }
 
   //crear carrito

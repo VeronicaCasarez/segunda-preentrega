@@ -5,8 +5,11 @@
     <div class="cart-container">
       <h2>Carrito {{this._id}}</h2>
       <ul class="cart-list">
-        {{#each this.products}}
-          <li>{{this._id}} - Cantidad: {{this.quantity}}</li>
+        {{#each products}}
+          <li>Id del producto:{{this._id}}</li>
+          <li> Nombre: {{this.name}}</li>
+          <li> Precio: {{this.price}}</li>
+          <li>Cantidad: {{this.quantity}}</li>
         {{/each}}
       </ul>
 
