@@ -84,39 +84,39 @@ router.get("/", async (req, res) => {
 
  
   //mostrar el detalle de un producto 
-  router.get('/detail/:productId', async (req, res) => {
-    const productId = req.params.productId;
+  // router.get('/detail/:productId', async (req, res) => {
+  //   const productId = req.params.productId;
   
-    try {
-       // consulta a la base de datos para obtener los detalles del producto por su ID
-      const productDetails = await products.getById(productId);
+  //   try {
+  //      // consulta a la base de datos para obtener los detalles del producto por su ID
+  //     const productDetails = await products.getById(productId);
   
-      if (!productDetails) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
-      }
+  //     if (!productDetails) {
+  //       return res.status(404).json({ error: 'Producto no encontrado' });
+  //     }
   
-      res.render('productdetail', { product: productDetails }); 
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener los detalles del producto' });
-    }
-  });
+  //     res.render('productdetail', { product: productDetails }); 
+  //   } catch (error) {
+  //     res.status(500).json({ error: 'Error al obtener los detalles del producto' });
+  //   }
+  // });
   
 
 
   // Obtener un producto por ID
   router.get('/:productId', async (req, res) => {
-    const { productId } = req.params;
+    const  productId  = req.params.productId;
     try {
-      const productById = await products.getById(productId)
-      res.json({message:"Listado de productos",data:productById});
-      
+      const productById = await products.getById(productId);
+      res.render('productdetail', { product: productById }); 
     } catch (error) {
-        res.status(500).json({
-            message:"Error al buscar el producto por id",
-            error:error
-        });
+      res.status(500).json({
+        message: "Error al buscar el producto por id",
+        error: error
+      });
     }
   });
+  
   
   // Crear un nuevo producto
   router.post('/', async (req, res) => {

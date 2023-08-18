@@ -6,8 +6,8 @@
       <p>Category: {{category}}</p>
       <p>Availability: {{availability}}</p>
       <p>Price: {{price}}</p>
-      <button class="add-to-cart-button" id="{{this._id}}" >Agregar al Carrito</button>
-      <button class="view-details-button" id="{{_id}}">Ver Detalles</button>
+      <button  type="button" class="add-to-cart-button" id={{_id}} >Agregar al Carrito</button>
+      <button type="button" class="view-details-button" id={{_id}}>Ver Detalles</button>
 
     </li>
   {{/each}}
@@ -24,4 +24,5 @@
     <a href="{{ pagination.nextLink }}">Siguiente</a>
   {{/if}}
 </div>
+ <script src="/js/script.js"></script>
 
