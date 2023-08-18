@@ -80,48 +80,8 @@
       console.log('Error:', error);
     });
   }
-  
-  
-  
+   
     
-
-//     try {
-//       // COMO OBTENENGO EL ID DEL CARRITO PARA AGREGAR EL PRODUCTO
-//       const cartResponse = await fetch('http://localhost:8080/api/carts/${cartId}', {
-//         method: 'GET',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         }
-//       });
-
-//       if (!cartResponse.ok) {
-//         throw new Error('Error al obtener el carrito');
-//       }
-
-//       const cartData = await cartResponse.json();
-//       const cartId = cartData.cartId;
-
-//       //agrega el producto al carrito
-//       const response = await fetch(`http://localhost:8080/api/carts/${cartId}/product/${productId}`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         }
-//       });
-
-//       // Maneja la respuesta de la API
-//       if (response.ok) {
-//         alert(result.message)
-//       } else {
-//         throw new Error('Error al agregar el producto al carrito');
-//       }
-//     } catch (error) {
-//       alert(error.message);
-//     }
-//   });
-// });
-
-
 
   // Lógica para mostrar los detalles del producto
 document.querySelectorAll('.view-details-button').forEach(button => {
