@@ -1,21 +1,25 @@
-<div>
-  <h1>Carritos de Compras</h1>
+<div class="container">
+  <h1 class="mt-5">Carritos de Compras</h1>
 
   {{#each carts}}
-    <div class="cart-container">
-      <h2>Carrito {{this._id}}</h2>
-      <ul class="cart-list">
-        {{#each products}}
-          <li>Id del producto:{{this._id}}</li>
-          <li> Nombre: {{this.name}}</li>
-          <li> Precio: {{this.price}}</li>
-          <li>Cantidad: {{this.quantity}}</li>
-        {{/each}}
-      </ul>
+    <div class="card mt-4">
+      <div class="card-body">
+        <h2 class="card-title">Carrito {{this._id}}</h2>
+        <ul class="list-group list-group-flush">
+          {{#each products}}
+            <li class="list-group-item">
+              <h5 class="card-title">Id del producto:{{this._id}}</h5>
+              <p class="card-text">Nombre: {{this.name}}</p>
+              <p class="card-text">Precio: {{this.price}}</p>
+              <p class="card-text">Cantidad: {{this.quantity}}</p>
+            </li>
+          {{/each}}
+        </ul>
 
-      {{#unless this.products.length}}
-        <p>Este carrito está vacío</p>
-      {{/unless}}
+        {{#unless this.products.length}}
+          <p>Este carrito está vacío</p>
+        {{/unless}}
+      </div>
     </div>
   {{/each}}
 </div>
