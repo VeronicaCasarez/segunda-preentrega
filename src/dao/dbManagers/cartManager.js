@@ -14,7 +14,7 @@ export default class Carts {
   
   //obtener carrito por id
   async getById(id) {
-    return await cartModel.findById(id).populate('products');
+    return await cartModel.findById(id).populate('products.product');;
        
   }
 

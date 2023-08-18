@@ -23,8 +23,8 @@
         <p>Category: ${product.category}</p>
         <p>Availability: ${product.availability}</p>
         <p>Price: ${product.price}</p>
-        <button class="add-to-cart-button" data-productid="${product._id}">Add to Cart</button>
-        <button class="view-details-button" data-productid="${product._id}">View Details</button>
+        <button class="add-to-cart-button" class= "${cart._id}" id="${product._id}">Add to Cart</button>
+        <button class="view-details-button" id="${product._id}">View Details</button>
       `;
       productList.appendChild(productItem);
     });
@@ -47,46 +47,79 @@
     }
   }
 
-  // Lógica para agregar el producto al carrito
-document.querySelectorAll('.add-to-cart-button').forEach(button => {
-  button.addEventListener('click', async (event) => {
-    const productId = event.target.id;
 
-    try {
-      // COMO OBTENENGO EL ID DEL CARRITO PARA AGREGAR EL PRODUCTO
-      const cartResponse = await fetch('http://localhost:8080/api/carts/:cid', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!cartResponse.ok) {
-        throw new Error('Error al obtener el carrito');
-      }
-
-      const cartData = await cartResponse.json();
-      const cartId = cartData.cartId;
-
-      //agrega el producto al carrito
-      const response = await fetch(`http://localhost:8080/api/carts/${cartId}/product/${productId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      // Maneja la respuesta de la API
-      if (response.ok) {
-        alert(result.message)
-      } else {
-        throw new Error('Error al agregar el producto al carrito');
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+  // Lógica para agregar el producto al carrito****
+  document.querySelectorAll('.add-to-cart-button').forEach(button => {
+    button.addEventListener('click', addToCart);
   });
-});
+  
+  function addToCart(event) {
+    event.preventDefault();
+  
+    let cartId = prompt("Ingrese el id de su carrito");
+    if (!cartId ) {
+      return; // Salir de la función si el usuario cancela
+    }
+  
+    const pid = event.target.id;
+  
+    fetch(`http://localhost:8080/api/carts/${cartId}/product/${pid}`, {
+      method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Producto agregado correctamente',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+  }
+  
+  
+  
+    
+
+//     try {
+//       // COMO OBTENENGO EL ID DEL CARRITO PARA AGREGAR EL PRODUCTO
+//       const cartResponse = await fetch('http://localhost:8080/api/carts/${cartId}', {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       });
+
+//       if (!cartResponse.ok) {
+//         throw new Error('Error al obtener el carrito');
+//       }
+
+//       const cartData = await cartResponse.json();
+//       const cartId = cartData.cartId;
+
+//       //agrega el producto al carrito
+//       const response = await fetch(`http://localhost:8080/api/carts/${cartId}/product/${productId}`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       });
+
+//       // Maneja la respuesta de la API
+//       if (response.ok) {
+//         alert(result.message)
+//       } else {
+//         throw new Error('Error al agregar el producto al carrito');
+//       }
+//     } catch (error) {
+//       alert(error.message);
+//     }
+//   });
+// });
 
 
 

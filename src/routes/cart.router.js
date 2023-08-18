@@ -35,7 +35,7 @@ router.get('/:cartId', async (req, res) => {
       res.status(404).json({ error: "Carrito no encontrado" });
       return;
     }
-
+  
     res.render('cart', { carts: [cartData] }); 
   } catch (error) {
     res.status(500).json({
