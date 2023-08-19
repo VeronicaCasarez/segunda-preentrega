@@ -29,7 +29,7 @@ router.get('/all', async (req, res) => {
 
 //NUEVO METODO GET
 router.get("/", async (req, res) => {
-  const { limit, page, filter, sort } = req.query;
+  const { limit, page, filter, sort, category, availability } = req.query;
   const defaultLimit = 10;
   const defaultPage = 1;
   
@@ -39,11 +39,14 @@ router.get("/", async (req, res) => {
   try {
     let response = await products.getAll();
     
-    // Resolución de los filtros por categoría
-    if (filter) {
-      response = await products.getByCategory(filter);
-    }
-    
+     // Resolución de los filtros por categoría y disponibilidad
+    if (filter === "category") {
+      response = await products.getByCategory(category);
+    } else if (filter === "availability") {
+      response = await products.getByAvailability(availability);
+      
+      }
+          
     // Resolución de la ordenación
     if (sort === 'asc' || sort === 'desc') {
       response.sort((a, b) => {

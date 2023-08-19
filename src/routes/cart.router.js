@@ -62,21 +62,19 @@ router.get('/:cartId', async (req, res) => {
     }
   });
   
-//agregar producto al carrito, si ya existe lo incrementa quantity en 1
+//agregar producto al carrito, si ya existe lo incrementa quantity en 1, sino lo agrega
   router.post("/:cid/product/:pid", async (req, res) => {
     try {
       const cartId = req.params.cid;
       const productId = req.params.pid;
   
       const cartData = await cartsManager.getById(cartId);
-  
       if (!cartData) {
         res.status(404).json({ error: "Carrito no encontrado" });
         return;
       }
   
       const existingProduct = await cartsManager.isProductInCart(cartId,productId);
-   console.log("exitingprofcutd",existingProduct)
       if (existingProduct) {
         // incrementar la cantidad
         await cartsManager.incrementProductQuantity(cartId, productId);
@@ -126,9 +124,7 @@ router.put('/:cid/', async (req, res) => {
     if (!cart) {
       return res.status(404).json({ message: 'Carito no encontrado' });
     }
-
     cart.products = cart.products.concat(productsToAdd);
-
     await cart.save();
 
     res.status(200).json({ message: 'Productos agregados al carrito', cart: cart });
@@ -141,10 +137,8 @@ router.put('/:cid/', async (req, res) => {
 //eliminar todos los productos del carrito
 router.delete('/:cid/', async (req, res) => {
   const cartId = req.params.cid;
-
   try {
     const cart = await cartsManager.getById(cartId);
-
     if (!cart) {
       return res.status(404).json({ message: 'Carrito no encontrado' });
 
@@ -163,23 +157,20 @@ router.delete('/:cid/', async (req, res) => {
   const cartId = req.params.cid;
   const productId = req.params.productId;
   const newQuantity = req.body.quantity; // Nueva cantidad de ejemplares
-  console.log(newQuantity)
+
   try {
     const cart = await cartsManager.getById(cartId);
-    console.log(cart)
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
-    // Buscar el producto en el carrito por su ID y lo actualiza
-   const productToUpdate = await cartsManager.findProductInCartAndUpdateQuantity(cartId, productId, newQuantity);
-    console.log(productToUpdate)
-       
-    // Guardar los cambios en la base de datos
+     // Buscar el producto en el carrito por su ID y lo actualiza
+    const productToUpdate = await cartsManager.findProductInCartAndUpdateQuantity(cartId, productId, newQuantity);
+     // Guardar los cambios en la base de datos
     await cart.save();
 
-    res.status(200).json({ message: 'Product quantity updated successfully', cart: cart });
+    res.status(200).json({ message: 'Cantidad actualizada', cart: cart });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating product quantity', error: error });
+    res.status(500).json({ message: 'Error al actualizar la cantidad', error: error });
   }
 });
 
