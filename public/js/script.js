@@ -11,24 +11,24 @@
   //   const data = await response.json();
   //   renderProducts(data.payload);
   //   renderPagination(data);
-  // }
+  // // }
 
-  function renderProducts(products) {
-    const productList = document.getElementById('product-list');
-    productList.innerHTML = '';
-    products.forEach(product => {
-      const productItem = document.createElement('li');
-      productItem.innerHTML = `
-        <h2>${product.name}</h2>
-        <p>Category: ${product.category}</p>
-        <p>Availability: ${product.availability}</p>
-        <p>Price: ${product.price}</p>
-        <button class="add-to-cart-button" class= "${cart._id}" id="${product._id}">Add to Cart</button>
-        <button class="view-details-button" id="${product._id}">View Details</button>
-      `;
-      productList.appendChild(productItem);
-    });
-  }
+  // function renderProducts(products) {
+  //   const productList = document.getElementById('product-list');
+  //   productList.innerHTML = '';
+  //   products.forEach(product => {
+  //     const productItem = document.createElement('li');
+  //     productItem.innerHTML = `
+  //       <h2>${product.name}</h2>
+  //       <p>Category: ${product.category}</p>
+  //       <p>Availability: ${product.availability}</p>
+  //       <p>Price: ${product.price}</p>
+  //       <button class="add-to-cart-button" class= "${cart._id}" id="${product._id}">Add to Cart</button>
+  //       <button class="view-details-button" id="${product._id}">View Details</button>
+  //     `;
+  //     productList.appendChild(productItem);
+  //   });
+  // }
 
   function renderPagination(data) {
     const paginationDiv = document.getElementById('pagination');

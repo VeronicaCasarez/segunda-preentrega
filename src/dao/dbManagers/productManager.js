@@ -10,8 +10,6 @@ export default class Products {
   }
 
   async getByCategory(filter) {
-    console.log(filter)
-    //RESOLVER QUE FILTRE 
     const productByCategory = await productsModel.aggregate([
       { $match: { category: filter } },
       { $group: { _id: "$name", products: { $push: "$$ROOT" } } }

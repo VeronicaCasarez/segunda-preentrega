@@ -30,7 +30,7 @@ router.get('/:cartId', async (req, res) => {
   const { cartId } = req.params;
   try {
      const cartData = await cartsManager.getById(cartId);
-      console.log(cartData)
+
     if (!cartData) {
       res.status(404).json({ error: "Carrito no encontrado" });
       return;
@@ -76,7 +76,7 @@ router.get('/:cartId', async (req, res) => {
       }
   
       const existingProduct = await cartsManager.isProductInCart(cartId,productId);
-   console.log(existingProduct)
+   console.log("exitingprofcutd",existingProduct)
       if (existingProduct) {
         // incrementar la cantidad
         await cartsManager.incrementProductQuantity(cartId, productId);
